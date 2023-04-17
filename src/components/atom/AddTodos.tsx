@@ -7,30 +7,22 @@ import { IconButton } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { auth, db } from "@/lib/firebase";
 import {
+  CollectionReference,
+  DocumentData,
   addDoc,
   collection,
   doc,
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { query, orderBy } from "firebase/firestore";
 
 const addTodos = () => {
   const [title, setTitle] = useState("");
-  const user = auth.currentUser;
-
-  //firestoreのデータをcreatedBy順にする
-  const createdBySort = query(
-    collection(collection(db, "Users"), user.uid, "TodoListId"),
-    orderBy("createdAt")
-  );
+  const user = auth.currentUser ?? { uid: "" }; //分からん
+  const uid = user.uid;
 
   // firestoreの各ユーザーのTodoListIdまでアクセス
-  const TodoListId = collection(
-    collection(db, "Users"),
-    user.uid,
-    "TodoListId"
-  );
+  const TodoListId = collection(collection(db, "Users"), uid, "TodoListId");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
